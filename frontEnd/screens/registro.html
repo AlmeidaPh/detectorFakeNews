@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Crie sua conta</title>
+    <link rel="stylesheet" href="/frontEnd/css/registro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Crie sua conta</h1>
+            <p>Preencha os campos abaixo para se registrar</p>
+        </div>
+        
+        <form id="registerForm" novalidate>
+            <div class="form-group">
+                <label for="name">Nome completo</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" name="name" required 
+                           placeholder="Digite seu nome completo">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" name="email" required
+                           placeholder="Digite seu email">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Nome de usuário</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-at"></i>
+                    <input type="text" id="username" name="username" required
+                           placeholder="Escolha um nome de usuário">
+                </div>
+                <small class="help-text">4-20 caracteres (letras, números e _)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="input-with-icon password-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" required
+                           placeholder="Crie uma senha segura">
+                    <button type="button" class="toggle-password" aria-label="Mostrar senha">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+                <small class="help-text">Mínimo 8 caracteres, incluindo maiúsculas, minúsculas e números</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirme sua senha</label>
+                <div class="input-with-icon password-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required
+                           placeholder="Digite a senha novamente">
+                    <button type="button" class="toggle-password" aria-label="Mostrar senha">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group terms-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <span class="checkmark"></span>
+                    Eu concordo com os <a href="#" target="_blank">Termos de Serviço</a> e <a href="#" target="_blank">Política de Privacidade</a>
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <span class="btn-text">Registrar</span>
+                <div class="loading-spinner hidden"></div>
+                <span class="success-checkmark hidden">✓</span>
+            </button>
+            
+            <div class="status-message hidden"></div>
+        </form>
+        
+        <div class="register-footer">
+            <p>Já tem uma conta? <a href="login.html">Faça login</a></p>
+        </div>
+    </div>
+
+    <script src="/frontEnd/js/registro.js"></script>
+</body>
+</html>
