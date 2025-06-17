@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector De FakeNews</title>
+    <link rel="stylesheet" href="/frontEnd/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <button id="menu-button" class="menu-itens">
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+            <div class="menu-bar"></div>
+        </button>
+
+        <a href="/frontEnd/Screens/registro.html" id="login-button" class="menu-itens">Cadastre-se</a>
+
+        <div id="sidebar">
+            <div style="margin-top: 20px;"></div>
+            <div class="menu-item" onclick="alert('Pesquisador de Imagens em desenvolvimento!')">
+                Pesquisador de Imagens
+            </div>
+        </div>
+
+        <button id="toggle-darkmode" onclick="alternarModo()">
+            <img id="darkmode-icon" src="/frontEnd/imgs/lua.svg" alt="Alternar modo escuro">
+        </button>
+
+        <header>Detector De FakeNews</header>
+
+        <div class="input-container">
+            <textarea id="texto" placeholder="Digite ou cole aqui a notícia que deseja verificar..."></textarea>
+            <div class="buttons">
+                <button onclick="verificarFakeNews()"><img src="frontEnd/imgs/btnPlay.svg" alt=""></button>
+            </div>
+        </div>
+
+        <div class="background-wave"></div>
+
+        <div class="result-container" id="result">
+            <h3>Resultado da Verificação</h3>
+            <p id="veredito"></p>
+            <p id="explicacao"></p>
+            <h4>Palavras-chave mais influentes:</h4>
+            <ul id="palavras-chave" class="palavras-chave"></ul>
+        </div>
+    </div>
+
+    <script src="/frontEnd/js/script.js"></script>
+</body>
+</html>
