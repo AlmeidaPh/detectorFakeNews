@@ -62,3 +62,33 @@ async function verificarFakeNews() {
         alert("Ocorreu um erro ao verificar a notícia. Por favor, tente novamente.");
     }
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const userInfo = document.getElementById('user-info');
+    const loginButton = document.getElementById('login-button');
+    const usernameDisplay = document.getElementById('username-display');
+    const logoutButton = document.getElementById('logout-button');
+
+    // Verificação segura do localStorage
+    try {
+        const token = localStorage.getItem('token');
+        const userString = localStorage.getItem('user');
+        const user = userString ? JSON.parse(userString) : null;
+
+        if (token && user) {
+            if (loginButton) loginButton.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'block';
+            if (usernameDisplay) usernameDisplay.textContent = user.username;
+        }
+
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html?logout=true';
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao verificar autenticação:', error);
+    }
+});
