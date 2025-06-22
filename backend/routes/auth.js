@@ -3,11 +3,9 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('./models/User');
-const auth = require('../middleware/auth');
+const User = require('../models/User.js');
 
 // @route   POST /api/auth/register
-// @desc    Registrar usuário
 router.post(
   '/register',
   [
@@ -25,31 +23,15 @@ router.post(
     const { name, email, username, password } = req.body;
 
     try {
-      // Verificar se usuário já existe
       let user = await User.findOne({ $or: [{ email }, { username }] });
-      
       if (user) {
-        return res.status(400).json({ 
-          errors: [{ msg: 'Usuário já existe com este email/nome de usuário' }] 
-        });
+        return res.status(400).json({ errors: [{ msg: 'Usuário já existe' }] });
       }
 
-      user = new User({
-        name,
-        email,
-        username,
-        password
-      });
-
+      user = new User({ name, email, username, password });
       await user.save();
 
-      // Retornar token JWT
-      const payload = {
-        user: {
-          id: user.id
-        }
-      };
-
+      const payload = { user: { id: user.id } };
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
@@ -67,11 +49,10 @@ router.post(
 );
 
 // @route   POST /api/auth/login
-// @desc    Autenticar usuário e retornar token
 router.post(
   '/login',
   [
-    check('emailOrUsername', 'Por favor insira um email ou nome de usuário válido').not().isEmpty(),
+    check('emailOrUsername', 'Por favor insira um email ou nome de usuário').not().isEmpty(),
     check('password', 'Senha é obrigatória').exists()
   ],
   async (req, res) => {
@@ -83,7 +64,6 @@ router.post(
     const { emailOrUsername, password } = req.body;
 
     try {
-      // Verificar se usuário existe por email ou username
       let user = await User.findOne({
         $or: [
           { email: emailOrUsername },
@@ -92,42 +72,22 @@ router.post(
       }).select('+password');
 
       if (!user) {
-        return res.status(400).json({ 
-          errors: [{ msg: 'Credenciais inválidas' }] 
-        });
+        return res.status(400).json({ errors: [{ msg: 'Credenciais inválidas' }] });
       }
 
-      // Verificar senha
       const isMatch = await user.matchPassword(password);
-
       if (!isMatch) {
-        return res.status(400).json({ 
-          errors: [{ msg: 'Credenciais inválidas' }] 
-        });
+        return res.status(400).json({ errors: [{ msg: 'Credenciais inválidas' }] });
       }
 
-      // Retornar token JWT
-      const payload = {
-        user: {
-          id: user.id
-        }
-      };
-
+      const payload = { user: { id: user.id } };
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
         { expiresIn: '5d' },
         (err, token) => {
           if (err) throw err;
-          res.json({ 
-            token,
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              username: user.username
-            }
-          });
+          res.json({ token });
         }
       );
     } catch (err) {
@@ -136,17 +96,5 @@ router.post(
     }
   }
 );
-
-// @route   GET /api/auth/user
-// @desc    Obter dados do usuário autenticado
-router.get('/user', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Erro no servidor');
-  }
-});
 
 module.exports = router;

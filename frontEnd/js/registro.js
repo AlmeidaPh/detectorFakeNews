@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar se o usuário já está logado
     if (localStorage.getItem('token')) {
-        window.location.href = 'dashboard.html';
+        window.location.href = '../screens/login.html';
     }
     
     // Toggle para mostrar/esconder senha
