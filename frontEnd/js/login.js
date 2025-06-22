@@ -1,3 +1,6 @@
+console.log('Token no localStorage:', localStorage.getItem('token'));
+console.log('Redirecionamento inicial:', window.location.pathname);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos do DOM
     const loginForm = document.getElementById('loginForm');
@@ -18,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar se o usuário já está logado
     if (localStorage.getItem('token')) {
-        redirectToDashboard();
+        window.location.href = '../index.html'; // Redireciona para a página principal
     }
     
     // Toggle para mostrar/esconder senha
@@ -250,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function redirectToDashboard() {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/index.html';
+        console.log('Redirecionando para:', '/index.html');
     }
 });
