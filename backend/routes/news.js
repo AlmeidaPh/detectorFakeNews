@@ -1,6 +1,6 @@
 import express from 'express';
-import { verifyNews } from '/backEnd/controllers/newsController.js';
-import authMiddleware from '/backEnd/middlewares/auth.js';
+import { verifyNews } from '../controllers/newsController.js';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = express.Router();
 
