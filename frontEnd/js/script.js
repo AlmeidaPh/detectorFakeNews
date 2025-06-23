@@ -1,34 +1,21 @@
-localStorage.clear(); // Remove depois de usar!
-console.log('LocalStorage limpo!');
-
-console.log('Dados do localStorage:');
-console.log('Token:', localStorage.getItem('token'));
-console.log('User:', localStorage.getItem('user'));
-
-
-
-
+// Menu Mobile
 document.getElementById('menu-button').addEventListener('click', function() {
     document.getElementById('sidebar').classList.toggle('active');
 });
 
+// Dark Mode
 function alternarModo() {
     const body = document.body;
     const modoAtual = body.classList.toggle('dark');
     localStorage.setItem('modo_escuro', modoAtual ? 'ativado' : 'desativado');
 
     const icon = document.getElementById('darkmode-icon');
-    icon.src = modoAtual ? '/frontEnd/imgs/lua.svg' : '/frontEnd/imgs/sol.svg';
+    if (icon) {
+        icon.src = modoAtual ? '/frontEnd/imgs/lua.svg' : '/frontEnd/imgs/sol.svg';
+    }
 }
 
-window.onload = () => {
-    const modoSalvo = localStorage.getItem('modo_escuro');
-    if (modoSalvo === 'ativado') {
-        document.body.classList.add('dark');
-        document.getElementById('darkmode-icon').src = '/frontEnd/imgs/lua.svg';
-    }
-};
-
+// Verificação de Fake News
 async function verificarFakeNews() {
     const texto = document.getElementById("texto").value;
 
@@ -47,7 +34,7 @@ async function verificarFakeNews() {
         });
 
         if (!response.ok) {
-            throw new Error('Erro na requisição');
+            throw new Error('Erro na requisição: ' + response.status);
         }
 
         const data = await response.json();
@@ -68,52 +55,105 @@ async function verificarFakeNews() {
         document.getElementById("result").scrollIntoView({ behavior: "smooth" });
 
     } catch (error) {
-        console.error("Erro:", error);
+        console.error("Erro na verificação:", error);
         alert("Ocorreu um erro ao verificar a notícia. Por favor, tente novamente.");
     }
 }
 
+// Gerenciamento de Usuário e Sessão
+function carregarModoSalvo() {
+    const modoSalvo = localStorage.getItem('modo_escuro');
+    const darkIcon = document.getElementById('darkmode-icon');
+    
+    if (modoSalvo === 'ativado' && darkIcon) {
+        document.body.classList.add('dark');
+        darkIcon.src = '/frontEnd/imgs/lua.svg';
+    } else if (darkIcon) {
+        darkIcon.src = '/frontEnd/imgs/sol.svg';
+    }
+}
 
+function configurarLogout() {
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/'; // Redireciona para a página inicial
+        });
+    }
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+function exibirInfoUsuario(user) {
     const userInfo = document.getElementById('user-info');
     const loginButton = document.getElementById('login-button');
     
-    // Verifica se está logado
+    if (loginButton) loginButton.style.display = 'none';
+    if (userInfo) {
+        userInfo.style.display = 'flex';
+        const usernameDisplay = document.getElementById('username-display');
+        if (usernameDisplay) {
+            usernameDisplay.textContent = user.username || 'Usuário';
+        }
+    }
+}
+
+function verificarAutenticacao() {
     const token = localStorage.getItem('token');
     const userString = localStorage.getItem('user');
 
-    if (token && userString) {
-        try {
-            const user = JSON.parse(userString);
-            
-            // Esconde botão de cadastro e mostra info do usuário
-            if (loginButton) loginButton.style.display = 'none';
-            if (userInfo) {
-                userInfo.style.display = 'flex';
-                const usernameDisplay = document.getElementById('username-display');
-                if (usernameDisplay) {
-                    usernameDisplay.textContent = user.username || 'Usuário';
-                }
-            }
-            
-            // Configura botão de logout
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.reload();
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao processar dados do usuário:', error);
-            if (loginButton) loginButton.style.display = 'block';
-            if (userInfo) userInfo.style.display = 'none';
+    if (!token || !userString) {
+        return false;
+    }
+
+    try {
+        // Verificação adicional para dados inválidos
+        if (userString === 'undefined' || userString === 'null' || userString.trim() === '') {
+            throw new Error('Dados do usuário inválidos');
         }
+
+        return JSON.parse(userString);
+    } catch (error) {
+        console.error('Erro ao processar dados do usuário:', error);
+        localStorage.removeItem('user'); // Limpa dados inválidos
+        return false;
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    // Debug: Verifica estado inicial
+    console.log('Estado do localStorage:', {
+        token: localStorage.getItem('token'),
+        user: localStorage.getItem('user')
+    });
+
+    // Configurações iniciais
+    carregarModoSalvo();
+    configurarLogout();
+
+    // Verificação de login
+    const user = verificarAutenticacao();
+    const loginButton = document.getElementById('login-button');
+    const userInfo = document.getElementById('user-info');
+
+    if (user) {
+        exibirInfoUsuario(user);
     } else {
         if (loginButton) loginButton.style.display = 'block';
         if (userInfo) userInfo.style.display = 'none';
     }
+
+    // Event Listener para o botão de verificação
+    const verificarBtn = document.getElementById('verificar-btn');
+    if (verificarBtn) {
+        verificarBtn.addEventListener('click', verificarFakeNews);
+    }
 });
+
+// Event Listener para o Dark Mode
+const darkModeToggle = document.getElementById('darkmode-toggle');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', alternarModo);
+}

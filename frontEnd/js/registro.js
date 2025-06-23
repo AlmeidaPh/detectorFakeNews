@@ -294,9 +294,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleRegisterSuccess(data) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+
+        console.log("Dados recebidos da API:", data);
+        if (!data.token || !data.user) {
+            console.error("Dados incompletos na resposta da API");
+            throw new Error("Dados de autenticação incompletos");
+        }
         
         showStatus('Registro realizado com sucesso! Redirecionando...', 'success');
-        
+
         setTimeout(() => {
             window.location.href = '/index.html'; // Já está correto
         }, 2000);
