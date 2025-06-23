@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Preparar dados
         const loginData = {
-            email: usernameInput.value.trim(),
-            password: passwordInput.value
+        email: usernameInput.value.trim(), // Garanta que está enviando email
+        password: passwordInput.value
         };
         try {
             // Mostrar estado de loading
