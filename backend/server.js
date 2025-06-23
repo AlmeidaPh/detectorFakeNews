@@ -1,11 +1,10 @@
-// server.js corrigido
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import authRoutes from '../routes/auth.js';
-import newsRoutes from '../routes/news.js';
-import connectDB from '../config/db.js';
+import authRoutes from './routes/auth.js';  // Caminho relativo corrigido
+import newsRoutes from './routes/news.js';
+import connectDB from './config/db.js';
 
 dotenv.config();
 
