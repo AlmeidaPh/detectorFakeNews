@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
-const User = require('../models/User');
+const auth = require('/backEnd/middleware/auth.js');
+const User = require('/backEnd/models/User.js');
 
 // Rota GET básica para teste
 router.get('/', auth, async (req, res) => {

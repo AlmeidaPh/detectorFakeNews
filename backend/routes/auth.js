@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { register, login, logout } from '/backEnd/controllers/authController.js';
+
 const router = express.Router();
-const authController = require('../controllers/authController');
 
-// Rotas de autenticação
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.get('/logout', authController.logout);
+router.post('/register', register);
+router.post('/login', login);
+router.get('/logout', logout);
 
-module.exports = router;
+export default router;
