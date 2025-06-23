@@ -19,4 +19,4 @@ const verifyNews = async (req, res) => {
   }
 };
 
-module.exports = { verifyNews };
+export { verifyNews };  

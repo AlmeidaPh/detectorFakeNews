@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth.js');
-const User = require('../models/User.js');
+import express from 'express';
+import auth from '../middlewares/auth.js';
+import User from '../models/User.js';
 
-// Rota GET básica para teste
+const router = express.Router();
+
 router.get('/', auth, async (req, res) => {
   try {
     const users = await User.find().select('-password');
@@ -14,4 +14,4 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
