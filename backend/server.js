@@ -1,30 +1,24 @@
+// server.js corrigido
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import authRoutes from '/backEnd/routes/auth.js';
-import newsRoutes from '/backEnd/routes/news.js';
-import connectDB from '/backEnd/config/db.js'; 
+import authRoutes from '../routes/auth.js';
+import newsRoutes from '../routes/news.js';
+import connectDB from '../config/db.js';
 
 dotenv.config();
 
 const app = express();
-
-// Conexão com MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:5500/fakeNewsDetector', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('Conectado ao MongoDB'))
-.catch(err => console.error('Erro na conexão:', err));
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 
 // Rotas
-app.use('/routes/auth.js', authRoutes);
-app.use('/routes/news.js', newsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/news', newsRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {
