@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar se o usuário já está logado
     if (localStorage.getItem('token')) {
-        window.location.href = '/frontEnd/screens/login.html';
+        window.location.href = '/index.html';
     }
     
     // Toggle para mostrar/esconder senha
@@ -292,18 +292,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleRegisterSuccess(data) {
-        // Salvar token
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
         
-        // Mostrar feedback de sucesso
         showStatus('Registro realizado com sucesso! Redirecionando...', 'success');
-        btnText.classList.add('hidden');
-        successCheckmark.classList.remove('hidden');
-        registerButton.classList.add('success');
         
-        // Redirecionar para login após 2 segundos
         setTimeout(() => {
-            window.location.href = '/frontEnd/screens/login.html?registered=true';
+            window.location.href = '/index.html'; // Já está correto
         }, 2000);
     }
     

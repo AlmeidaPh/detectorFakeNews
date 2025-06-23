@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar se o usuário já está logado
     if (localStorage.getItem('token')) {
-        window.location.href = '../index.html'; // Redireciona para a página principal
+        window.location.href = '/index.html';
     }
     
     // Toggle para mostrar/esconder senha
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleLoginSuccess(data) {
         // Salvar token e dados do usuário
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('user', JSON.stringify(data.user)); // Isso deve incluir o username
         
         // Lembrar usuário se marcado
         if (rememberCheckbox.checked) {
@@ -201,7 +201,9 @@ document.addEventListener('DOMContentLoaded', function() {
         loginButton.classList.add('success');
         
         // Redirecionar após 2 segundos
-        setTimeout(redirectToDashboard, 2000);
+        setTimeout(() => {
+            window.location.href = '/index.html';
+        }, 2000);
     }
     
     function handleLoginError(error) {
