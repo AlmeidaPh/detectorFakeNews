@@ -18,12 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurações
     const API_URL = 'http://localhost:5000/api/auth';
     const MIN_PASSWORD_LENGTH = 6;
-    
-    // Verificar se o usuário já está logado
-    if (localStorage.getItem('token')) {
-        window.location.href = '/index.html';
-    }
-    
+     
     // Toggle para mostrar/esconder senha
     if (togglePasswordBtn) {
         togglePasswordBtn.addEventListener('click', function() {
@@ -63,10 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Preparar dados
         const loginData = {
-            emailOrUsername: usernameInput.value.trim(),
+            email: usernameInput.value.trim(),
             password: passwordInput.value
         };
-        
         try {
             // Mostrar estado de loading
             setLoadingState(true);
@@ -183,32 +177,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleLoginSuccess(data) {
-        // Verificação mais robusta
-        if (!data || !data.token || !data.user) {
-            console.error("Resposta inválida da API:", data);
-            throw new Error("Resposta de login inválida");
-        }
+    // Verificação robusta
+    if (!data?.token || !data?.user) {
+        console.error("Dados incompletos:", data);
+        throw new Error("Resposta da API incompleta");
+    }
 
-        // Armazena os dados de forma consistente
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({
-            username: data.user.username,
-            email: data.user.email
-        }));
+    // Armazenamento seguro
+    const userData = {
+        id: data.user.id,
+        username: data.user.username || 'Usuário',
+        email: data.user.email
+    };
 
-        // Se "Lembrar de mim" estiver marcado
-        if (rememberCheckbox.checked) {
-            localStorage.setItem('rememberedUser', data.user.username || data.user.email);
-        } else {
-            localStorage.removeItem('rememberedUser');
-        }
-
-        showStatus('Login realizado com sucesso! Redirecionando...', 'success');
-
-        // Redireciona para a página correta
-        setTimeout(() => {
-            window.location.href = '/index.html';
-        }, 2000);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    
+    // Redirecionamento
+    showStatus('Login realizado! Redirecionando...', 'success');
+    setTimeout(() => window.location.href = '/index.html', 1500);
     }
     
     function handleLoginError(error) {

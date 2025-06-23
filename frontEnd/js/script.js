@@ -96,26 +96,19 @@ function exibirInfoUsuario(user) {
 }
 
 function verificarAutenticacao() {
+  try {
     const token = localStorage.getItem('token');
-    const userString = localStorage.getItem('user');
+    const userData = localStorage.getItem('user');
 
-    if (!token || !userString) {
-        return false;
-    }
+    if (!token || !userData) return false;
 
-    try {
-        const user = JSON.parse(userString);
-        if (!user || (!user.username && !user.email)) {
-            console.error('Dados do usuário incompletos');
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            return false;
-        }
-        return user;
-    } catch (error) {
-        console.error('Erro ao analisar dados do usuário:', error);
-        return false;
-    }
+    const user = JSON.parse(userData);
+    return user?.id ? user : false;
+    
+  } catch (error) {
+    console.error('Erro ao verificar autenticação:', error);
+    return false;
+  }
 }
 
 // Inicialização
@@ -133,17 +126,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificação de login
     const user = verificarAutenticacao();
     const loginButton = document.getElementById('login-button');
+    const registerButton = document.getElementById('register-button'); // Novo
     const userInfo = document.getElementById('user-info');
 
     if (user) {
         exibirInfoUsuario(user);
-        if (loginButton) loginButton.style.display = 'none'; // Esconde o botão de cadastro
-        if (userInfo) userInfo.style.display = 'flex'; // Mostra a info do usuário
+        if (loginButton) loginButton.style.display = 'none';
+        if (registerButton) registerButton.style.display = 'none'; // Esconde ambos se logado
+        if (userInfo) userInfo.style.display = 'flex';
     } else {
         if (loginButton) {
             loginButton.style.display = 'block';
-            // Adiciona event listener para o botão de cadastro
             loginButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/frontEnd/screens/login.html';
+            });
+        }
+        if (registerButton) {
+            registerButton.style.display = 'block';
+            registerButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.href = '/frontEnd/screens/registro.html';
             });
@@ -152,14 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event Listener para o botão de verificação
-    const verificarBtn = document.querySelector('.buttons button'); // Atualizado para o seletor correto
+    const verificarBtn = document.querySelector('.buttons button');
     if (verificarBtn) {
         verificarBtn.addEventListener('click', verificarFakeNews);
     }
-});
 
-// Event Listener para o Dark Mode
-const darkModeToggle = document.getElementById('darkmode-toggle');
-if (darkModeToggle) {
-    darkModeToggle.addEventListener('click', alternarModo);
-}
+    // Event Listener para o Dark Mode (melhorado)
+    const darkModeToggle = document.getElementById('darkmode-toggle') || 
+                           document.getElementById('toggle-darkmode');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', alternarModo);
+    }
+});
