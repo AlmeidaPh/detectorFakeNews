@@ -134,13 +134,4 @@ const logout = async (req, res) => {
   }
 };
 
-//falha de segurança abaixo:
-const token = jwt.sign(
-  { userId: user._id },
-  process.env.JWT_SECRET,
-  { expiresIn: '1h' }
-);
-
-console.log('Token gerado:', token); // Verifique se está sendo gerado
-
 export { register, login, logout };
