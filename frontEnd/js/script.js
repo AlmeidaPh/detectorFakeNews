@@ -87,15 +87,11 @@ function configurarLogout() {
 
 function exibirInfoUsuario(user) {
     const userInfo = document.getElementById('user-info');
-    const loginButton = document.getElementById('login-button');
+    const usernameDisplay = document.getElementById('username-display');
     
-    if (loginButton) loginButton.style.display = 'none';
-    if (userInfo) {
+    if (userInfo && usernameDisplay) {
+        usernameDisplay.textContent = user.username || 'Usuário';
         userInfo.style.display = 'flex';
-        const usernameDisplay = document.getElementById('username-display');
-        if (usernameDisplay) {
-            usernameDisplay.textContent = user.username || 'Usuário';
-        }
     }
 }
 
@@ -108,15 +104,16 @@ function verificarAutenticacao() {
     }
 
     try {
-        // Verificação adicional para dados inválidos
-        if (userString === 'undefined' || userString === 'null' || userString.trim() === '') {
-            throw new Error('Dados do usuário inválidos');
+        const user = JSON.parse(userString);
+        if (!user || (!user.username && !user.email)) {
+            console.error('Dados do usuário incompletos');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            return false;
         }
-
-        return JSON.parse(userString);
+        return user;
     } catch (error) {
-        console.error('Erro ao processar dados do usuário:', error);
-        localStorage.removeItem('user'); // Limpa dados inválidos
+        console.error('Erro ao analisar dados do usuário:', error);
         return false;
     }
 }
@@ -140,13 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (user) {
         exibirInfoUsuario(user);
+        if (loginButton) loginButton.style.display = 'none'; // Esconde o botão de cadastro
+        if (userInfo) userInfo.style.display = 'flex'; // Mostra a info do usuário
     } else {
-        if (loginButton) loginButton.style.display = 'block';
+        if (loginButton) {
+            loginButton.style.display = 'block';
+            // Adiciona event listener para o botão de cadastro
+            loginButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/frontEnd/screens/registro.html';
+            });
+        }
         if (userInfo) userInfo.style.display = 'none';
     }
 
     // Event Listener para o botão de verificação
-    const verificarBtn = document.getElementById('verificar-btn');
+    const verificarBtn = document.querySelector('.buttons button'); // Atualizado para o seletor correto
     if (verificarBtn) {
         verificarBtn.addEventListener('click', verificarFakeNews);
     }

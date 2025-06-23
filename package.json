@@ -5,8 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backEnd/server.js",
+    "dev": "nodemon backEnd/server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

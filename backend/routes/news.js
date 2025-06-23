@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { verifyNews } from '/backEnd/controllers/newsController.js';
+import authMiddleware from '/backEnd/middlewares/auth.js';
+
 const router = express.Router();
-const newsController = require('../controllers/newsController');
-const authMiddleware = require('../middlewares/auth');
 
-// Rotas protegidas por autenticação
-router.post('/verify', authMiddleware, newsController.verifyNews);
+router.post('/verify', authMiddleware, verifyNews);
 
-module.exports = router;
+export default router;

@@ -292,19 +292,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleRegisterSuccess(data) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-
-        console.log("Dados recebidos da API:", data);
-        if (!data.token || !data.user) {
-            console.error("Dados incompletos na resposta da API");
-            throw new Error("Dados de autenticação incompletos");
+        // Verificação mais robusta dos dados recebidos
+        if (!data || !data.token || !data.user) {
+            console.error("Dados incompletos na resposta:", data);
+            throw new Error("Dados de registro incompletos");
         }
-        
+
+        // Armazena os dados do usuário de forma consistente
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify({
+            username: data.user.username,
+            email: data.user.email
+        }));
+
         showStatus('Registro realizado com sucesso! Redirecionando...', 'success');
 
+        // Redireciona para a página correta
         setTimeout(() => {
-            window.location.href = '/index.html'; // Já está correto
+            window.location.href = '/index.html';
         }, 2000);
     }
     

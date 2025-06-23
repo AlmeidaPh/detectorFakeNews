@@ -184,20 +184,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleLoginSuccess(data) {
         // Verificação mais robusta
-        if (!data || !data.success || !data.token) {
+        if (!data || !data.token || !data.user) {
             console.error("Resposta inválida da API:", data);
             throw new Error("Resposta de login inválida");
         }
 
+        // Armazena os dados de forma consistente
         localStorage.setItem('token', data.token);
-        
-        if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            console.log("Usuário autenticado:", data.user.username);
+        localStorage.setItem('user', JSON.stringify({
+            username: data.user.username,
+            email: data.user.email
+        }));
+
+        // Se "Lembrar de mim" estiver marcado
+        if (rememberCheckbox.checked) {
+            localStorage.setItem('rememberedUser', data.user.username || data.user.email);
         } else {
-            console.warn("API não retornou dados do usuário");
+            localStorage.removeItem('rememberedUser');
         }
 
+        showStatus('Login realizado com sucesso! Redirecionando...', 'success');
+
+        // Redireciona para a página correta
         setTimeout(() => {
             window.location.href = '/index.html';
         }, 2000);
