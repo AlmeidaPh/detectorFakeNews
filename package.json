@@ -1,4 +1,13 @@
 {
+  "name": "detector-fake-news-backend",
+  "version": "1.0.0",
+  "description": "API para detecção de fake news",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

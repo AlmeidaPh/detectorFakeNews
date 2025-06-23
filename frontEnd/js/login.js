@@ -183,24 +183,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleLoginSuccess(data) {
-        // Salvar token e dados do usuário
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user)); // Isso deve incluir o username
-        
-        // Lembrar usuário se marcado
-        if (rememberCheckbox.checked) {
-            localStorage.setItem('rememberedUser', usernameInput.value.trim());
-        } else {
-            localStorage.removeItem('rememberedUser');
+        // Verificação mais robusta
+        if (!data || !data.success || !data.token) {
+            console.error("Resposta inválida da API:", data);
+            throw new Error("Resposta de login inválida");
         }
+
+        localStorage.setItem('token', data.token);
         
-        // Mostrar feedback de sucesso
-        showStatus('Login realizado com sucesso! Redirecionando...', 'success');
-        btnText.classList.add('hidden');
-        successCheckmark.classList.remove('hidden');
-        loginButton.classList.add('success');
-        
-        // Redirecionar após 2 segundos
+        if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+            console.log("Usuário autenticado:", data.user.username);
+        } else {
+            console.warn("API não retornou dados do usuário");
+        }
+
         setTimeout(() => {
             window.location.href = '/index.html';
         }, 2000);

@@ -1,31 +1,35 @@
+require('dotenv').config();
 const express = require('express');
-const path = require('path');
-const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 const cors = require('cors');
+const authRoutes = require('./routes/auth');
+const newsRoutes = require('./routes/news');
 
 const app = express();
 
-// Conexão com o banco de dados
-connectDB();
+// Conexão com MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/fakeNewsDetector', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('Conectado ao MongoDB'))
+.catch(err => console.error('Erro na conexão:', err));
 
-// Middleware
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Configuração para arquivos estáticos
-app.use(express.static(path.join(__dirname, 'frontEnd')));
-app.use('/css', express.static(path.join(__dirname, 'frontEnd/css')));
-app.use('/js', express.static(path.join(__dirname, 'frontEnd/js')));
-app.use('/imgs', express.static(path.join(__dirname, 'frontEnd/imgs')));
+// Rotas
+app.use('/api/auth', authRoutes);
+app.use('/api/news', newsRoutes);
 
-// Rotas da API
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
-
-// Rota para o frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontEnd', 'index.html'));
+// Rota de teste
+app.get('/', (req, res) => {
+  res.send('API Fake News Detector');
 });
 
+// Inicia o servidor
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
