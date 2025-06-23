@@ -1,3 +1,13 @@
+localStorage.clear(); // Remove depois de usar!
+console.log('LocalStorage limpo!');
+
+console.log('Dados do localStorage:');
+console.log('Token:', localStorage.getItem('token'));
+console.log('User:', localStorage.getItem('user'));
+
+
+
+
 document.getElementById('menu-button').addEventListener('click', function() {
     document.getElementById('sidebar').classList.toggle('active');
 });
@@ -62,33 +72,48 @@ async function verificarFakeNews() {
         alert("Ocorreu um erro ao verificar a notícia. Por favor, tente novamente.");
     }
 }
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const userInfo = document.getElementById('user-info');
     const loginButton = document.getElementById('login-button');
-    const usernameDisplay = document.getElementById('username-display');
-    const logoutButton = document.getElementById('logout-button');
+    
+    // Verifica se está logado
+    const token = localStorage.getItem('token');
+    const userString = localStorage.getItem('user');
 
-    // Verificação segura do localStorage
-    try {
-        const token = localStorage.getItem('token');
-        const userString = localStorage.getItem('user');
-        const user = userString ? JSON.parse(userString) : null;
-
-        if (token && user) {
+    if (token && userString) {
+        try {
+            const user = JSON.parse(userString);
+            
+            // Esconde botão de cadastro e mostra info do usuário
             if (loginButton) loginButton.style.display = 'none';
-            if (userInfo) userInfo.style.display = 'block';
-            if (usernameDisplay) usernameDisplay.textContent = user.username;
+            if (userInfo) {
+                userInfo.style.display = 'flex';
+                const usernameDisplay = document.getElementById('username-display');
+                if (usernameDisplay) {
+                    usernameDisplay.textContent = user.username || 'Usuário';
+                }
+            }
+            
+            // Configura botão de logout
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.reload();
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao processar dados do usuário:', error);
+            if (loginButton) loginButton.style.display = 'block';
+            if (userInfo) userInfo.style.display = 'none';
         }
-
-        if (logoutButton) {
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = 'login.html?logout=true';
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao verificar autenticação:', error);
+    } else {
+        if (loginButton) loginButton.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
     }
 });
