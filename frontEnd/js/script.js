@@ -11,7 +11,7 @@ function alternarModo() {
 
     const icon = document.getElementById('darkmode-icon');
     if (icon) {
-        icon.src = modoAtual ? '/frontEnd/imgs/lua.svg' : '/frontEnd/imgs/sol.svg';
+        icon.src = modoAtual ? '/frontEnd/imgs/1.png' : '/frontEnd/imgs/2.png';
     }
 }
 
@@ -67,9 +67,9 @@ function carregarModoSalvo() {
     
     if (modoSalvo === 'ativado' && darkIcon) {
         document.body.classList.add('dark');
-        darkIcon.src = '/frontEnd/imgs/lua.svg';
+        darkIcon.src = '/frontEnd/imgs/1.png';
     } else if (darkIcon) {
-        darkIcon.src = '/frontEnd/imgs/sol.svg';
+        darkIcon.src = '/frontEnd/imgs/2.png';
     }
 }
 
