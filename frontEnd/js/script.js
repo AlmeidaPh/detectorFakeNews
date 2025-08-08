@@ -6,13 +6,11 @@ document.getElementById('menu-button').addEventListener('click', function() {
 // Dark Mode
 function alternarModo() {
     const body = document.body;
-    const modoAtual = body.classList.toggle('dark');
-    localStorage.setItem('modo_escuro', modoAtual ? 'ativado' : 'desativado');
+    const modoEscuroAtivo = body.classList.toggle('dark');
+    localStorage.setItem('modo_escuro', modoEscuroAtivo ? 'ativado' : 'desativado');
 
     const icon = document.getElementById('darkmode-icon');
-    if (icon) {
-        icon.src = modoAtual ? '/frontEnd/imgs/lua.svg' : '/frontEnd/imgs/sol.svg';
-    }
+    icon.src = modoEscuroAtivo ? '/frontEnd/imgs/lua.svg' : '/frontEnd/imgs/sol.svg';
 }
 
 // Verificação de Fake News
@@ -64,12 +62,13 @@ async function verificarFakeNews() {
 function carregarModoSalvo() {
     const modoSalvo = localStorage.getItem('modo_escuro');
     const darkIcon = document.getElementById('darkmode-icon');
-    
-    if (modoSalvo === 'ativado' && darkIcon) {
+
+    if (modoSalvo === 'ativado') {
         document.body.classList.add('dark');
-        darkIcon.src = '/frontEnd/imgs/lua.svg';
-    } else if (darkIcon) {
-        darkIcon.src = '/frontEnd/imgs/sol.svg';
+        if (darkIcon) darkIcon.src = '/frontEnd/imgs/lua.svg';
+    } else {
+        document.body.classList.remove('dark');
+        if (darkIcon) darkIcon.src = '/frontEnd/imgs/sol.svg';
     }
 }
 
@@ -159,8 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event Listener para o Dark Mode (melhorado)
-    const darkModeToggle = document.getElementById('darkmode-toggle') || 
-                           document.getElementById('toggle-darkmode');
+
     if (darkModeToggle) {
         darkModeToggle.addEventListener('click', alternarModo);
     }
