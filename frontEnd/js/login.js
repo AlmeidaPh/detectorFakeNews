@@ -11,13 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginButton = document.querySelector('.btn-primary');
     const btnText = document.querySelector('.btn-text');
     const loadingSpinner = document.querySelector('.loading-spinner');
-    const successCheckmark = document.querySelector('.success-checkmark');
+    const btnExit = document.querySelector('.exit-button');
     const statusMessage = document.querySelector('.status-message');
     const togglePasswordBtn = document.querySelector('.toggle-password');
     
     // Configurações
     const API_URL = 'http://localhost:5000/api/auth';
     const MIN_PASSWORD_LENGTH = 6;
+
+    // Configuração do botão de Sair
+    btnExit.addEventListener('click', function(){
+        window.location.href = '/index.html';
+    });
      
     // Toggle para mostrar/esconder senha
     if (togglePasswordBtn) {
