@@ -157,9 +157,140 @@ document.addEventListener('DOMContentLoaded', () => {
         verificarBtn.addEventListener('click', verificarFakeNews);
     }
 
-    // Event Listener para o Dark Mode (melhorado)
-
+    // Event Listener para o Dark Mode
     if (darkModeToggle) {
         darkModeToggle.addEventListener('click', alternarModo);
     }
 });
+
+    // Acessibilidade - Controles de Fonte e Visual
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos da acessibilidade
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const accessibilityOptions = document.getElementById('accessibility-options');
+        const closeAccessibility = document.getElementById('close-accessibility');
+        const fontButtons = document.querySelectorAll('.font-btn');
+        const fontTypeButtons = document.querySelectorAll('.font-type-btn');
+        const toggleImages = document.getElementById('toggle-images');
+        
+        // Alternar visibilidade das opções de acessibilidade
+        if (accessibilityToggle && accessibilityOptions) {
+            accessibilityToggle.addEventListener('click', function() {
+                accessibilityOptions.classList.toggle('active');
+            });
+        }
+        
+        // Fechar opções de acessibilidade
+        if (closeAccessibility) {
+            closeAccessibility.addEventListener('click', function() {
+                accessibilityOptions.classList.remove('active');
+            });
+        }
+        
+        // Controles de tamanho de fonte
+        fontButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                changeFontSize(action);
+            });
+        });
+        
+        // Controles de tipo de fonte
+        fontTypeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const fontType = this.getAttribute('data-font');
+                changeFontType(fontType);
+            });
+        });
+        
+        // Ocultar/mostrar imagens
+        if (toggleImages) {
+            toggleImages.addEventListener('change', function() {
+                document.body.classList.toggle('hide-images', this.checked);
+                localStorage.setItem('hide_images', this.checked);
+            });
+        }
+        
+        // Carregar preferências salvas
+        loadAccessibilityPreferences();
+    });
+
+    // Função para alterar o tamanho da fonte
+    function changeFontSize(action) {
+        const body = document.body;
+        
+        // Remover classes de tamanho existentes
+        body.classList.remove('font-small', 'font-large', 'font-xlarge');
+        
+        // Aplicar novo tamanho baseado na ação
+        switch(action) {
+            case 'decrease':
+                body.classList.add('font-small');
+                localStorage.setItem('font_size', 'small');
+                break;
+            case 'increase':
+                body.classList.add('font-large');
+                localStorage.setItem('font_size', 'large');
+                break;
+            case 'reset':
+            default:
+                localStorage.setItem('font_size', 'normal');
+                break;
+        }
+    }
+
+    // Função para alterar o tipo de fonte
+    function changeFontType(fontType) {
+        const body = document.body;
+        
+        // Remover classes de tipo de fonte existentes
+        body.classList.remove('font-dyslexic', 'font-high-contrast');
+        
+        // Aplicar novo tipo de fonte
+        switch(fontType) {
+            case 'dyslexic':
+                body.classList.add('font-dyslexic');
+                localStorage.setItem('font_type', 'dyslexic');
+                break;
+            case 'high-contrast':
+                body.classList.add('font-high-contrast');
+                localStorage.setItem('font_type', 'high-contrast');
+                break;
+            case 'default':
+            default:
+                localStorage.setItem('font_type', 'default');
+                break;
+        }
+    }
+
+    // Função para carregar preferências salvas
+    function loadAccessibilityPreferences() {
+        // Carregar tamanho da fonte
+        const fontSize = localStorage.getItem('font_size');
+        if (fontSize) {
+            changeFontSize(fontSize === 'small' ? 'decrease' : 
+                        fontSize === 'large' ? 'increase' : 'reset');
+        }
+        
+        // Carregar tipo de fonte
+        const fontType = localStorage.getItem('font_type');
+        if (fontType) {
+            changeFontType(fontType);
+        }
+        
+        // Carregar preferência de ocultar imagens
+        const hideImages = localStorage.getItem('hide_images') === 'true';
+        if (hideImages) {
+            document.getElementById('toggle-images').checked = true;
+            document.body.classList.add('hide-images');
+        }
+    }
+
+    // Adicionar estilos para ocultar imagens
+    const hideImagesStyle = document.createElement('style');
+    hideImagesStyle.textContent = `
+        body.hide-images img {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(hideImagesStyle);

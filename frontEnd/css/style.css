@@ -394,6 +394,227 @@ body.dark #register-button:hover {
     background-color: var(--primary-hover);
 }
 
+/* Container da acessibilidade */
+.accessibility-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Botão toggle */
+.accessibility-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.accessibility-toggle:hover {
+    transform: scale(1.1);
+}
+
+.accessibility-toggle img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1);
+}
+
+/* Opções de acessibilidade */
+.accessibility-options {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    width: 280px;
+    background-color: var(--white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    padding: 15px;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.accessibility-options.active {
+    display: flex;
+}
+
+.accessibility-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.accessibility-header h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.accessibility-group h4 {
+    margin: 0 0 10px 0;
+    color: var(--text);
+    font-size: 1rem;
+}
+
+/* Controles de tamanho de fonte */
+.font-size-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.font-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.font-btn:hover {
+    background-color: var(--primary-light);
+}
+
+/* Controles de tipo de fonte */
+.font-type-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.font-type-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.font-type-btn:hover {
+    background-color: var(--primary-light);
+}
+
+/* Opções de toggle */
+.toggle-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+#toggle-images {
+    display: none;
+}
+
+.toggle-slider {
+    width: 40px;
+    height: 20px;
+    background-color: var(--text-lighter);
+    border-radius: 20px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--white);
+    top: 2px;
+    left: 2px;
+    transition: var(--transition);
+}
+
+#toggle-images:checked + .toggle-slider {
+    background-color: var(--primary);
+}
+
+#toggle-images:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Modo escuro para acessibilidade */
+body.dark .accessibility-options {
+    background-color: var(--text);
+    color: var(--white);
+}
+
+body.dark .accessibility-header h3 {
+    color: var(--white);
+}
+
+body.dark .accessibility-group h4 {
+    color: var(--white);
+}
+
+body.dark .font-btn,
+body.dark .font-type-btn {
+    background-color: #3a3a3a;
+    color: var(--white);
+    border-color: #555;
+}
+
+body.dark .font-btn:hover,
+body.dark .font-type-btn:hover {
+    background-color: #4a4a4a;
+}
+
+/* Classes para tamanhos de fonte */
+.font-small {
+    font-size: 0.9rem;
+}
+
+.font-large {
+    font-size: 1.2rem;
+}
+
+.font-xlarge {
+    font-size: 1.4rem;
+}
+
+/* Classes para tipos de fonte */
+.font-dyslexic {
+    font-family: 'OpenDyslexic', Arial, sans-serif;
+}
+
+.font-high-contrast {
+    background-color: black !important;
+    color: yellow !important;
+}
+
+.font-high-contrast button,
+.font-high-contrast input,
+.font-high-contrast textarea {
+    background-color: black !important;
+    color: yellow !important;
+    border-color: yellow !important;
+}
+
 /* Dark mode adjustments */
 body.dark #username-display {
     background-color: rgba(255, 255, 255, 0.1);
