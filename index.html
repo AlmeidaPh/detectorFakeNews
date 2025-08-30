@@ -51,6 +51,47 @@
             <ul id="palavras-chave" class="palavras-chave"></ul>
         </div>
     </div>
+    <div id="accessibility-box" class="accessibility-container">
+        <button id="accessibility-toggle" class="accessibility-toggle">
+            <img src="/frontEnd/imgs/simboloDeAcessibilidade.svg" alt="Opções de acessibilidade">
+        </button>
+        
+        <div id="accessibility-options" class="accessibility-options">
+            <div class="accessibility-header">
+                <h3>Acessibilidade</h3>
+                <button id="close-accessibility" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="accessibility-group">
+                <h4>Tamanho da Fonte</h4>
+                <div class="font-size-controls">
+                    <button class="font-btn" data-action="decrease">A-</button>
+                    <button class="font-btn" data-action="reset">A</button>
+                    <button class="font-btn" data-action="increase">A+</button>
+                </div>
+            </div>
+            
+            <div class="accessibility-group">
+                <h4>Tipo de Fonte</h4>
+                <div class="font-type-controls">
+                    <button class="font-type-btn" data-font="default">Padrão</button>
+                    <button class="font-type-btn" data-font="dyslexic">Dislexia</button>
+                    <button class="font-type-btn" data-font="high-contrast">Alto Contraste</button>
+                </div>
+            </div>
+            
+            <div class="accessibility-group">
+                <h4>Outras Opções</h4>
+                <div class="other-options">
+                    <label class="toggle-option">
+                        <input type="checkbox" id="toggle-images">
+                        <span class="toggle-slider"></span>
+                        Ocultar imagens
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="/frontEnd/js/script.js"></script>
 </body>
