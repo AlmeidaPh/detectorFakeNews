@@ -1,5 +1,5 @@
 # Detector de Fake News 🤖📰
-Projeto de TCC desenvolvido para o curso técnico em Desenvolvimento de Sistemas, com o objetivo de criar uma solução inteligente para detecção de notícias falsas utilizando técnicas de Machine Learning e uma plataforma web acessível.
+Projeto de TCC desenvolvido para o curso técnico em Informática para Internet, com o objetivo de criar uma solução inteligente para detecção de notícias falsas utilizando técnicas de Machine Learning e uma plataforma web acessível.
 
 # 🧠 Sobre o Projeto
 O Detector de Fake News é uma aplicação web que analisa textos de notícias e classifica sua veracidade em seis categorias diferentes, desde "pants-fire" (completamente falsa) até "true" (verdadeira). A plataforma também oferece explicações sobre a classificação e destaca as palavras-chave mais influentes na decisão do algoritmo.
