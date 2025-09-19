@@ -37,7 +37,7 @@ header {
     text-align: center;
     font-weight: bold;
     font-size: 1.5em;
-    margin-top: 20px;
+    margin-top: 14px;
     color: #46566B;
 }
 
@@ -54,7 +54,7 @@ header {
 
 .input-container {
     background-color: #46566B;
-    margin: 20px auto;
+    margin: 80px auto;
     padding: 25px;
     width: 90%;
     max-width: 600px;
@@ -80,6 +80,11 @@ textarea {
     background-color: #46566B;
     color: white;
     outline: none;
+}
+
+textarea::placeholder{
+    color: white; 
+    font-size: 15px;
 }
 
 .buttons {
@@ -109,12 +114,12 @@ textarea {
 
 .background-wave {
     background-color: #46566B;
-    height: 300px;
+    height: 235px;
     width: 100%;
     border-top-left-radius: 50% 20%;
     border-top-right-radius: 50% 20%;
     position: relative;
-    margin-top: auto;
+    margin-top: 30;
     z-index: -1;
 }
 
@@ -190,7 +195,7 @@ body.dark .buttons button {
     position: absolute;
     top: 20px;
     left: 20px;
-    background-color: #f5f5f5;
+    background-color: var(--primary);
     border: none;
     border-radius: 5px;
     width: 40px;
@@ -208,7 +213,7 @@ body.dark .buttons button {
 .menu-bar {
     width: 60%;
     height: 3px;
-    background-color: #46566B;
+    background-color: var(--white);
     border-radius: 2px;
     transition: background-color 0.3s;
 }
@@ -216,8 +221,8 @@ body.dark .buttons button {
 #sidebar {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 250px;
+    left: -330px;
+    width: 290px;
     height: 100%;
     background-color: #46566B;
     color: white;
@@ -291,17 +296,27 @@ body.dark #toggle-darkmode {
     color: #f5f5f5;
 }
 
+#login-button{
+    width: 90px;
+    height: 40px;
+}
+
+#register-button{
+    width: 140px;
+    height: 40px;
+}
+
 #login-button, #register-button {
     position: absolute;
     top: 20px;
-    background-color: #f5f5f5;
+    background-color: var(--primary);
     border: none;
     border-radius: 5px;
     padding: 8px 15px;
     cursor: pointer;
     font-size: 0.9em;
     font-weight: bold;
-    color: #46566B;
+    color: var(--white);
     transition: all 0.3s;
     z-index: 1000;
     text-decoration: none;
@@ -313,7 +328,7 @@ body.dark #toggle-darkmode {
 }
 
 #register-button {
-    left: 150px; /* Ajuste esta distância conforme necessário */
+    left: 170.01px; /* Ajuste esta distância conforme necessário */
 }
 
 #login-button:hover, #register-button:hover {
