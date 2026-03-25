@@ -53,4 +53,4 @@ O backend implementa os padrões de **Clean Architecture**:
     ```
 
 ---
-*Desenvolvido sob rigorosos padrões de engenharia de software.*
+
