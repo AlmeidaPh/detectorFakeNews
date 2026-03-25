@@ -82,4 +82,3 @@ npm run dev
 - **Segredos**: Expurgo total de tokens e senhas do histórico Git.
 
 ---
-*Scandit.AI — Transformando verificação de dados em ciência de precisão.*
