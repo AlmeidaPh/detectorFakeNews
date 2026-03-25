@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  
+  --pants-fire: #ef4444; 
+  --false: #f87171;     
+  --mostly-false: #fbbf24;
+  --half-true: #fde047;   
+  --mostly-true: #4ade80;  
+  --true: #22c55e;        
+
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --accent: #f1f5f9;
+  --border: #e2e8f0;
+}
+
+@theme inline {
+  --font-sans: var(--font-jakarta), var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-dyslexic: "OpenDyslexic", sans-serif;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  
+  --color-pants-fire: var(--pants-fire);
+  --color-false: var(--false);
+  --color-mostly-false: var(--mostly-false);
+  --color-half-true: var(--half-true);
+  --color-mostly-true: var(--mostly-true);
+  --color-true: var(--true);
+  
+  --animate-pulse-ring: pulse-ring 2s infinite ease-in-out;
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(0.95); opacity: 0.5; }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617;
+    --foreground: #f8fafc;
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --accent: #1e293b;
+    --border: #334155;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Accessibility Support */
+.font-dyslexic {
+  font-family: var(--font-dyslexic) !important;
+}
+
+.high-contrast {
+  /* Premium Dark High Contrast Palette */
+  --background: #000000 !important;
+  --foreground: #ffffff !important;
+  --card: #000000 !important;
+  --card-foreground: #ffffff !important;
+  --primary: #ffff00 !important; /* Electric Yellow for CTAs */
+  --primary-foreground: #000000 !important;
+  --accent: #1a1a1a !important;
+  --border: #ffffff !important;
+  
+  /* High Saturation Semantic Colors */
+  --pants-fire: #ff0000 !important;
+  --false: #ff5555 !important;
+  --mostly-false: #ffaa00 !important;
+  --half-true: #ffff00 !important;
+  --mostly-true: #00ff00 !important;
+  --true: #00ff00 !important;
+
+  /* Global Overrides for HC */
+  color-scheme: dark !important;
+}
+
+.high-contrast * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  border-color: #ffffff !important;
+}
+
+.high-contrast button, 
+.high-contrast .btn {
+  border: 2px solid #ffffff !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.high-contrast button:hover {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border-color: #ffff00 !important;
+}
+
+.high-contrast input, 
+.high-contrast textarea {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.high-contrast .bg-primary {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+
+/* Custom Styles */
+.glass-panel {
+  background: rgba(var(--background), 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

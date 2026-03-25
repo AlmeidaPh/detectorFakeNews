@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "architecture-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "b92f11750a7cf9a6e5fa005ff72b0ae4f6aa45adc684193537d82ecb6e4eefd8"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "machine-learning-engineer": {
+      "source": "404kidwiz/claude-supercode-skills",
+      "sourceType": "github",
+      "computedHash": "38f5e4b7bcfc6cfd57b73b7a05d236c0362d05b1bf5ddf35a2d95abf3c39d451"
+    },
+    "mongoose-mongodb": {
+      "source": "pluginagentmarketplace/custom-plugin-nodejs",
+      "sourceType": "github",
+      "computedHash": "620c2050ddb4451b5032a7a7120c44282f4ac91af229df92f9ce4cc0452c1ac5"
+    },
+    "nodejs-backend-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "c47fd9547c1b847b9fc11ebf7832f955bf81e62bff097b607d1497be8722e226"
+    },
+    "security-best-practices": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "computedHash": "c27616fb4e27999605b90b261dc729784420c8d77bd1a98748384ffaa5b35704"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "computedHash": "0a413bf988d06481f69bb81df2070741c3ba12dd9f1be2706d57f259c905992d"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+# ========================
+# Dependências
+# ========================
+node_modules/
+.pnp/
+.pnp.js
+
+# ========================
+# Build / Produção
+# ========================
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# ========================
+# Ambiente / Segredos
+# ========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+npm-debug.log*
+pino-*.log
+
+# ========================
+# Sistema Operacional
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ========================
+# IDEs / Editores
+# ========================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ========================
+# Python / ML
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ========================
+# Modelos ML (grandes demais para Git)
+# ========================
+IA/*.pkl
+*.pkl
+*.h5
+*.pt
+*.onnx
+
+# ========================
+# Testes
+# ========================
+coverage/
+.nyc_output/
+
+# ========================
+# Misc
+# ========================
+*.tgz
+.vercel

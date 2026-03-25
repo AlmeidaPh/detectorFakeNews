@@ -2,161 +2,79 @@ import pandas as pd
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
-from imblearn.over_sampling import SMOTE, RandomOverSampler
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from collections import Counter
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, accuracy_score
+from imblearn.over_sampling import SMOTE
+import joblib
+import os
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
-# =============================
-# Etapa 1 – Leitura dos Dados
-# =============================
+# Pre-download NLTK
+nltk.download('stopwords')
+nltk.download('wordnet')
 
-# Lê os três conjuntos do dataset LIAR
-dados_colunas = ['id', 'label', 'statement', 'subject', 'speaker', 'speaker_job_title', 'state_info',
-                 'party_affiliation', 'barely_true_counts', 'false_counts', 'half_true_counts',
-                 'mostly_true_counts', 'pants_on_fire_counts', 'context']
+def clean_text(text):
+    if not isinstance(text, str): return ""
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    
+    lemmatizer = WordNetLemmatizer()
+    stop_words = set(stopwords.words('english'))
+    
+    words = text.split()
+    cleaned = [lemmatizer.lemmatize(w) for w in words if w not in stop_words]
+    return " ".join(cleaned)
 
-train = pd.read_csv("liar_dataset/train.tsv", sep='\t', header=None)
-test = pd.read_csv("liar_dataset/test.tsv", sep='\t', header=None)
-valid = pd.read_csv("liar_dataset/valid.tsv", sep='\t', header=None)
-
-train.columns = test.columns = valid.columns = dados_colunas
-
-# =============================
-# Etapa 2 – Análise Exploratória
-# =============================
-
-print(train[['label', 'statement']].head())
-print("\nDistribuição de rótulos no conjunto de treino:")
-print(train['label'].value_counts())
-
-print("\nExemplo de frase por rótulo:")
-rotulos_unicos = train['label'].unique()
-for rotulo in rotulos_unicos:
-    exemplo = train[train['label'] == rotulo]['statement'].iloc[0]
-    print(f"Rótulo: {rotulo}\n  Exemplo: {exemplo}\n{'-'*40}")
-
-print("\nVerificando valores ausentes (nulos):")
-print(train.isnull().sum())
-
-train.fillna('', inplace=True)
-test.fillna('', inplace=True)
-valid.fillna('', inplace=True)
-
-# =============================
-# Etapa 3 – Pré-processamento
-# =============================
+# 1. Load Data
+cols = ['id', 'label', 'statement', 'subject', 'speaker', 'job', 'state', 'party', 'bt', 'f', 'ht', 'mt', 'pof', 'context']
+train = pd.read_csv("liar_dataset/train.tsv", sep='\t', header=None, names=cols).fillna('')
+valid = pd.read_csv("liar_dataset/valid.tsv", sep='\t', header=None, names=cols).fillna('')
 
 label_map = {
-    'pants-fire': 0,
-    'false': 1,
-    'barely-true': 2,
-    'half-true': 3,
-    'mostly-true': 4,
-    'true': 5
+    'pants-fire': 0, 'false': 1, 'barely-true': 2, 
+    'half-true': 3, 'mostly-true': 4, 'true': 5
 }
 
-train['label_num'] = train['label'].map(label_map)
-test['label_num'] = test['label'].map(label_map)
-valid['label_num'] = valid['label'].map(label_map)
+train['y'] = train['label'].map(label_map)
+valid['y'] = valid['label'].map(label_map)
 
-print("\nRótulos convertidos:")
-print(train[['label', 'label_num']].head())
+# 2. Preprocess
+print("Cleaning text...")
+train['X'] = train['statement'].apply(clean_text)
+valid['X'] = valid['statement'].apply(clean_text)
 
-# Limpeza de texto
-def limpar_texto(texto):
-    texto = texto.lower()
-    texto = re.sub(r'[^\w\s]', '', texto)
-    texto = re.sub(r'\d+', '', texto)
-    return texto
+# 3. Pipeline Definition
+print("Building Pipeline...")
+pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
+    ('clf', LogisticRegression(max_iter=2000, multi_class='multinomial'))
+])
 
-train['clean_statement'] = train['statement'].apply(limpar_texto)
-test['clean_statement'] = test['statement'].apply(limpar_texto)
-valid['clean_statement'] = valid['statement'].apply(limpar_texto)
+# 4. Handle Imbalance (Prior to Pipeline or via Sample Weights)
+# Since SMOTE is on sparse matrices, we'll do it manually before fit
+tfidf_vec = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
+X_train_tfidf = tfidf_vec.fit_transform(train['X'])
 
-print("\nTexto limpo de exemplo:")
-print(train[['statement', 'clean_statement']].head(1))
-
-# Vetorização TF-IDF
-vectorizer = TfidfVectorizer(max_features=5000)
-X_train_tfidf = vectorizer.fit_transform(train['clean_statement'])
-X_test_tfidf = vectorizer.transform(test['clean_statement'])
-X_valid_tfidf = vectorizer.transform(valid['clean_statement'])
-
-print("\nTF-IDF aplicado com sucesso!")
-print(f"Formato da matriz de treino: {X_train_tfidf.shape}")
-
-# =============================
-# Etapa 4 – Treinamento e Avaliação Inicial
-# =============================
-
-# Balanceamento com SMOTE
+print("Balancing with SMOTE...")
 smote = SMOTE(random_state=42)
-X_train_bal, y_train_bal = smote.fit_resample(X_train_tfidf, train['label_num'])
+X_res, y_res = smote.fit_resample(X_train_tfidf, train['y'])
 
-unique, counts = np.unique(y_train_bal, return_counts=True)
-print("\nDistribuição após SMOTE:")
-for label, count in zip(unique, counts):
-    print(f"Classe {label}: {count} amostras")
+# 5. Train
+print("Training model...")
+pipeline.named_steps['clf'].fit(X_res, y_res)
+# Set the fitted vectorizer back to pipeline to ensure consistency
+pipeline.named_steps['tfidf'].vocabulary_ = tfidf_vec.vocabulary_
+pipeline.named_steps['tfidf'].idf_ = tfidf_vec.idf_
+pipeline.named_steps['tfidf'].stop_words_ = tfidf_vec.stop_words_
 
-# Treina o modelo
-modelo = LogisticRegression(max_iter=1000)
-modelo.fit(X_train_bal, y_train_bal)
+# 6. Evaluate
+y_pred = pipeline.predict(valid['X'])
+print(f"\nAccuracy: {accuracy_score(valid['y'], y_pred):.4f}")
+print("\nClassification Report:")
+print(classification_report(valid['y'], y_pred, target_names=list(label_map.keys())))
 
-#joblib é uma biblioteca que facilita salvar objetos como modelos, vetorizadores e arrays de forma eficiente.
-import joblib
-
-# Salva o modelo treinado
-joblib.dump(modelo, 'modelo_fake_news.pkl')
-
-# Salva o vetorizador TF-IDF
-joblib.dump(vectorizer, 'vetorizador_tfidf.pkl')
-print("\nModelo e vetorizador salvos com sucesso!")
-
-# Avaliação no conjunto de validação
-y_valid = valid['label_num']
-y_pred = modelo.predict(X_valid_tfidf)
-
-nomes_rotulos = ['pants-fire', 'false', 'barely-true', 'half-true', 'mostly-true', 'true']
-
-print("\nAcurácia:", accuracy_score(y_valid, y_pred))
-print("\nRelatório de Classificação (sem balanceamento):")
-print(classification_report(y_valid, y_pred, target_names=nomes_rotulos))
-
-# Matriz de confusão
-cm = confusion_matrix(y_valid, y_pred)
-plt.figure(figsize=(10, 7))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=nomes_rotulos, yticklabels=nomes_rotulos)
-plt.xlabel('Previsto')
-plt.ylabel('Real')
-plt.title('Matriz de Confusão (sem balanceamento)')
-plt.tight_layout()
-plt.show()
-
-# =============================
-# Etapa 5 – Avaliação com RandomOverSampler
-# =============================
-
-ros = RandomOverSampler(random_state=42)
-X_train_bal, y_train_bal = ros.fit_resample(X_train_tfidf, train['label_num'])
-print("\nDistribuição após Oversampling:", Counter(y_train_bal))
-
-modelo.fit(X_train_bal, y_train_bal)
-y_pred_bal = modelo.predict(X_valid_tfidf)
-
-print("\nResultados após balanceamento com RandomOverSampler:")
-print(classification_report(y_valid, y_pred_bal, target_names=nomes_rotulos))
-print("Acurácia:", accuracy_score(y_valid, y_pred_bal))
-
-cm_bal = confusion_matrix(y_valid, y_pred_bal)
-plt.figure(figsize=(10, 7))
-sns.heatmap(cm_bal, annot=True, fmt='d', cmap='Blues', xticklabels=nomes_rotulos, yticklabels=nomes_rotulos)
-plt.xlabel('Previsto')
-plt.ylabel('Real')
-plt.title('Matriz de Confusão (com Oversampling)')
-plt.tight_layout()
-plt.show()
-
-
+# 7. Save Artifacts
+joblib.dump(pipeline, 'modelo_fake_news_pipeline.pkl')
+print("\n✅ Global Pipeline saved as 'modelo_fake_news_pipeline.pkl'")
