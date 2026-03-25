@@ -1,19 +1,28 @@
 import pandas as pd
 import re
+import os
+import joblib
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report, accuracy_score
 from imblearn.over_sampling import SMOTE
-import joblib
-import os
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 
-# Pre-download NLTK
-nltk.download('stopwords')
-nltk.download('wordnet')
+# 🎯 Configurações
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'liar_dataset')
+OUTPUT_PATH = os.path.join(BASE_DIR, 'modelo_fake_news_pipeline.pkl')
+
+# ⏬ Download NLTK data
+try:
+    nltk.data.find('corpora/stopwords')
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    nltk.download('stopwords')
+    nltk.download('wordnet')
 
 def clean_text(text):
     if not isinstance(text, str): return ""
@@ -27,10 +36,11 @@ def clean_text(text):
     cleaned = [lemmatizer.lemmatize(w) for w in words if w not in stop_words]
     return " ".join(cleaned)
 
-# 1. Load Data
+# 1. Carregar Dados
+print("📂 Carregando dataset LIAR...")
 cols = ['id', 'label', 'statement', 'subject', 'speaker', 'job', 'state', 'party', 'bt', 'f', 'ht', 'mt', 'pof', 'context']
-train = pd.read_csv("liar_dataset/train.tsv", sep='\t', header=None, names=cols).fillna('')
-valid = pd.read_csv("liar_dataset/valid.tsv", sep='\t', header=None, names=cols).fillna('')
+train = pd.read_csv(os.path.join(DATA_DIR, "train.tsv"), sep='\t', header=None, names=cols).fillna('')
+valid = pd.read_csv(os.path.join(DATA_DIR, "valid.tsv"), sep='\t', header=None, names=cols).fillna('')
 
 label_map = {
     'pants-fire': 0, 'false': 1, 'barely-true': 2, 
@@ -40,41 +50,38 @@ label_map = {
 train['y'] = train['label'].map(label_map)
 valid['y'] = valid['label'].map(label_map)
 
-# 2. Preprocess
-print("Cleaning text...")
+# 2. Pré-processamento
+print("🧹 Limpando textos...")
 train['X'] = train['statement'].apply(clean_text)
 valid['X'] = valid['statement'].apply(clean_text)
 
-# 3. Pipeline Definition
-print("Building Pipeline...")
-pipeline = Pipeline([
-    ('tfidf', TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
-    ('clf', LogisticRegression(max_iter=2000, multi_class='multinomial'))
-])
+# 3. Construção e Treinamento
+print("🏗️ Construindo Pipeline e Vetorizando...")
+tfidf = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
+X_train_tfidf = tfidf.fit_transform(train['X'])
 
-# 4. Handle Imbalance (Prior to Pipeline or via Sample Weights)
-# Since SMOTE is on sparse matrices, we'll do it manually before fit
-tfidf_vec = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
-X_train_tfidf = tfidf_vec.fit_transform(train['X'])
-
-print("Balancing with SMOTE...")
+print("⚖️ Balanceando classes com SMOTE...")
 smote = SMOTE(random_state=42)
 X_res, y_res = smote.fit_resample(X_train_tfidf, train['y'])
 
-# 5. Train
-print("Training model...")
-pipeline.named_steps['clf'].fit(X_res, y_res)
-# Set the fitted vectorizer back to pipeline to ensure consistency
-pipeline.named_steps['tfidf'].vocabulary_ = tfidf_vec.vocabulary_
-pipeline.named_steps['tfidf'].idf_ = tfidf_vec.idf_
-pipeline.named_steps['tfidf'].stop_words_ = tfidf_vec.stop_words_
+print("🚂 Treinando Classificador (Logistic Regression)...")
+clf = LogisticRegression(max_iter=2000)
+clf.fit(X_res, y_res)
 
-# 6. Evaluate
+# 4. Criar o Pipeline Final com os componentes treinados
+pipeline = Pipeline([
+    ('tfidf', tfidf),
+    ('clf', clf)
+])
+
+# 5. Avaliação
+print("📊 Avaliando no conjunto de validação...")
 y_pred = pipeline.predict(valid['X'])
-print(f"\nAccuracy: {accuracy_score(valid['y'], y_pred):.4f}")
-print("\nClassification Report:")
+print(f"\nAcurácia: {accuracy_score(valid['y'], y_pred):.4f}")
+print("\nRelatório de Classificação:")
 print(classification_report(valid['y'], y_pred, target_names=list(label_map.keys())))
 
-# 7. Save Artifacts
-joblib.dump(pipeline, 'modelo_fake_news_pipeline.pkl')
-print("\n✅ Global Pipeline saved as 'modelo_fake_news_pipeline.pkl'")
+# 6. Salvar Artefatos
+print(f"💾 Salvando pipeline em: {OUTPUT_PATH}")
+joblib.dump(pipeline, OUTPUT_PATH)
+print("\n✅ Treinamento concluído com sucesso!")

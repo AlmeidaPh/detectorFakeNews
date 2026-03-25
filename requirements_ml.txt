@@ -7,3 +7,4 @@ numpy==1.26.2
 nltk==3.8.1
 pydantic==2.5.2
 python-multipart==0.0.6
+imbalanced-learn==0.11.0

@@ -6,7 +6,7 @@
     "install:all": "npm install && cd backend && npm install && cd ../frontend-new && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend-new && npm run dev",
-    "dev:ml": "python ml_service.py",
+    "dev:ml": "./.venv/bin/python ml_service.py",
     "dev": "concurrently -n \"BACKEND,FRONTEND,ML_SERVICE\" -c \"blue,green,yellow\" \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:ml\""
   },
   "devDependencies": {
