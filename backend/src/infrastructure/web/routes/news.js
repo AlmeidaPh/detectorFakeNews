@@ -10,9 +10,9 @@ const newsController = new NewsController();
 router.post("/verify", optionalAuth, (req, res, next) => newsController.verify(req, res, next));
 
 // 📁 Histórico de análises do usuário (Protegido)
-router.get("/history", auth, (req, res, next) => newsController.getHistory(req, res, next));
+router.get("/history", auth, (req, res, next) => newsController.history(req, res, next));
 
 // 📄 Detalhes de uma análise específica
-router.get("/:id", auth, (req, res, next) => newsController.getAnalysisById(req, res, next));
+router.get("/:id", auth, (req, res, next) => newsController.detail(req, res, next));
 
 export default router;

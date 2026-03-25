@@ -16,9 +16,20 @@ export class VerifyNewsUseCase {
       throw new Error('O texto da análise deve ter pelo menos 10 caracteres');
     }
 
-    // 1. Chamar o serviço de ML (Poderia ser um Port separado, mas deixamos aqui por enquanto)
-    const response = await axios.post(this.mlServiceUrl, { text });
-    const { verdict, explanation_natural: explanation, keywords } = response.data;
+    // 1. Chamar o serviço de ML
+    let mlData;
+    try {
+      const response = await axios.post(this.mlServiceUrl, { text }, { timeout: 15000 });
+      mlData = response.data;
+    } catch (error) {
+      console.error(`ERROR ML_SERVICE: ${error.message}`);
+      if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+        throw new Error('O serviço de inteligência artificial está temporariamente offline ou demorou demais para responder.');
+      }
+      throw new Error(`Falha na comunicação com a IA: ${error.message}`);
+    }
+
+    const { verdict, explanation_natural: explanation, keywords } = mlData;
 
     // 2. Criar a entidade de Domínio
     const analysis = new Analysis({

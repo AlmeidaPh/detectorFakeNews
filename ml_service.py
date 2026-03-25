@@ -24,22 +24,21 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'IA', 'modelo_fake_news.pkl')
 VECTORIZER_PATH = os.path.join(BASE_DIR, 'IA', 'vetorizador_tfidf.pkl')
 
-# Global state for model pipeline
-pipeline = None
+# 🚀 Global state for model pipeline
+PIPELINE_PATH = os.path.join(BASE_DIR, 'IA', 'modelo_fake_news_pipeline.pkl')
+FALLBACK_PATH = os.path.join(BASE_DIR, 'modelo_fake_news_pipeline.pkl')
 
-@app.on_event("startup")
-async def load_assets():
-    global pipeline
-    PIPELINE_PATH = os.path.join(BASE_DIR, 'IA', 'modelo_fake_news_pipeline.pkl')
-    
-    if os.path.exists(PIPELINE_PATH):
-        pipeline = joblib.load(PIPELINE_PATH)
-        print("🚀 Model Pipeline loaded successfully!")
-    else:
-        # Fallback to separate files if pipeline doesn't exist
-        print("⚠️ Pipeline not found, looking for separate assets...")
-        # ... logic for separate assets if needed ...
-        raise FileNotFoundError("Pipeline model not found. Please run training script first.")
+print(f"🔍 Iniciando carregamento do modelo...", flush=True)
+
+if os.path.exists(PIPELINE_PATH):
+    pipeline = joblib.load(PIPELINE_PATH)
+    print("🚀 Model Pipeline loaded successfully!", flush=True)
+elif os.path.exists(FALLBACK_PATH):
+    pipeline = joblib.load(FALLBACK_PATH)
+    print(f"🚀 Model Pipeline loaded from fallback: {FALLBACK_PATH}", flush=True)
+else:
+    print(f"❌ ERRO CRÍTICO: Modelo não encontrado em {PIPELINE_PATH}!", flush=True)
+    pipeline = None # Evita crash imediato, mas falhará no /predict
 
 class PredictionRequest(BaseModel):
     text: str

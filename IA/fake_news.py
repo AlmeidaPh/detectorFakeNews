@@ -16,24 +16,29 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'liar_dataset')
 OUTPUT_PATH = os.path.join(BASE_DIR, 'modelo_fake_news_pipeline.pkl')
 
-# ⏬ Download NLTK data
+# ⏬ NLTK logic
+HAS_WORDNET = True
 try:
-    nltk.data.find('corpora/stopwords')
     nltk.data.find('corpora/wordnet')
+    nltk.data.find('corpora/stopwords')
 except LookupError:
-    nltk.download('stopwords')
-    nltk.download('wordnet')
+    HAS_WORDNET = False
+    print("⚠️ Dados do NLTK não encontrados. A lematização será ignorada se necessário.")
 
 def clean_text(text):
     if not isinstance(text, str): return ""
     text = text.lower()
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     
-    lemmatizer = WordNetLemmatizer()
     stop_words = set(stopwords.words('english'))
-    
     words = text.split()
-    cleaned = [lemmatizer.lemmatize(w) for w in words if w not in stop_words]
+    
+    if HAS_WORDNET:
+        lemmatizer = WordNetLemmatizer()
+        cleaned = [lemmatizer.lemmatize(w) for w in words if w not in stop_words]
+    else:
+        cleaned = [w for w in words if w not in stop_words]
+        
     return " ".join(cleaned)
 
 # 1. Carregar Dados

@@ -29,8 +29,5 @@ const UserSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-// Índice explícito para performance no campo de e-mail e username
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
 
 export default mongoose.model('User', UserSchema);
