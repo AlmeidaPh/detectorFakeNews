@@ -1,0 +1,16 @@
+{
+  "name": "scandit-ai-orchestrator",
+  "version": "1.0.0",
+  "description": "Orquestrador para o projeto Detector de Fake News Scandit.AI",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend-new && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend-new && npm run dev",
+    "dev:ml": "python ml_service.py",
+    "dev": "concurrently -n \"BACKEND,FRONTEND,ML_SERVICE\" -c \"blue,green,yellow\" \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:ml\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.0"
+  }
+}
