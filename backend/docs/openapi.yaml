@@ -32,13 +32,15 @@ components:
           type: string
         text:
           type: string
-        prediction:
+        verdict:
           type: string
           enum: [pants-fire, false, barely-true, half-true, mostly-true, true]
-        probability:
-          type: number
         explanation:
           type: string
+        keywords:
+          type: object
+          additionalProperties:
+            type: number
         createdAt:
           type: string
           format: date-time

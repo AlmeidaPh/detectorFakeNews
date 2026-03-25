@@ -36,21 +36,50 @@ O backend implementa os padrões de **Clean Architecture**:
 - 📊 **Insights de IA**: Explicações detalhadas sobre os termos que mais influenciaram o veredito.
 - 🛡️ **Seguro por Design**: Proteção nativa contra injeção NoSQL, DoS e vazamento de dados infraestruturais.
 
-## 🔧 Instalação e Execução
+## 🚀 Inicialização Rápida (Recomendado)
 
-1.  Configure as variáveis de ambiente nos arquivos `.env` das pastas `backend/` e `frontend-new/`.
-2.  Inicie o serviço de Machine Learning:
+O **Scandit.AI** possui um orquestrador centralizado que inicia os três serviços (Backend, Frontend e IA) simultaneamente com um único comando.
+
+### 📋 Pré-requisitos
+- **Node.js**: v20+ 
+- **Python**: 3.10+ (com módulos `venv` e `pip`)
+- **MongoDB**: Cluster no Atlas ou Instância Local.
+
+### ⚙️ Configuração do Ambiente
+1.  **Dependências do Sistema (Linux/Debian)**:
     ```bash
-    python ml_service.py
+    sudo apt update && sudo apt install python3-pip python3-venv -y
     ```
-3.  Inicie o servidor Backend:
-    ```bash
-    cd backend && node server.js
-    ```
-4.  Inicie o Frontend:
-    ```bash
-    cd frontend-new && npm run dev
-    ```
+2.  **Variáveis de Ambiente**:
+    - Crie um arquivo `.env` na pasta `backend/` seguindo o modelo:
+      ```env
+      MONGO_URI=mongodb+srv://...
+      JWT_SECRET=sua_chave_secreta
+      PORT=5000
+      ML_SERVICE_URL=http://localhost:8000/predict
+      ```
+
+### 🏁 Rodando o Projeto
+Na raiz do projeto, execute:
+```bash
+# Instala todas as dependências (Backend, Frontend e Venv de IA)
+npm run install:all
+
+# Inicia todos os serviços (Backend + Frontend + ML Service)
+npm run dev
+```
+
+## 🏗️ Estrutura de Diretórios
+- `/backend`: API em Clean Architecture (Node.js).
+- `/frontend-new`: Interface Next.js 15 (App Router).
+- `/IA`: Scripts de treinamento e modelos (`.pkl`).
+- `ml_service.py`: Microserviço FastAPI funcional.
+- `.venv/`: Ambiente virtual Python isolado.
+
+## 🛡️ Segurança e Hardening
+- **CSP Estrita**: Cabeçalhos de segurança via Helmet.
+- **Anti-DoS**: Limites de payload configurados no Express.
+- **Segredos**: Expurgo total de tokens e senhas do histórico Git.
 
 ---
-
+*Scandit.AI — Transformando verificação de dados em ciência de precisão.*

@@ -33,20 +33,36 @@ curl -X POST http://localhost:5000/api/news/verify \
 
 Retorna todas as análises realizadas pelo usuário autenticado.
 
-## 🛡️ Segurança e Limites
+## 🏗️ Clean Architecture
 
-- **Limite de Payload**: A API aceita no máximo **15kb** por requisição (JSON).
-- **CORS**: Apenas origens autorizadas podem consumir a API em ambiente de produção.
-- **Headers**: O sistema utiliza `Helmet` para prevenir ataques de injeção e XSS.
+O Scandit.AI segue os princípios da **Arquitetura Limpa**, o que significa que o código é dividido em camadas de responsabilidade:
+
+1.  **Domain (Domínio)**: Contém as entidades (`Analysis.js`, `User.js`) e as regras de negócio que nunca mudam, independente de usarmos MongoDB ou SQL.
+2.  **Application (Aplicação)**: Onde residem os **Casos de Uso** (`VerifyNewsUseCase.js`). Eles orquestram o fluxo de dados entre o domínio e o mundo externo.
+3.  **Infrastructure (Infraestrutura)**: Contém os adaptadores técnicos, como o repositório de dados (`MongooseAnalysisRepository.js`) e os controladores Web.
+
+## 🤖 Integração com Machine Learning
+
+O Backend não processa a IA diretamente. Ele se comunica com um **Microserviço FastAPI** (porta 8000) especializado em inferência.
+
+-   **Fluxo**: Backend ➔ `axios.post` ➔ FastAPI ➔ `joblib.load(model)` ➔ Resposta JSON.
+-   **Segurança**: O backend possui um timeout de 15 segundos para evitar que falhas na IA travem a API principal.
+
+## 🛡️ Segurança e Hardening
+
+-   **Anti-DoS**: O limite de body no Express é de **15kb**.
+-   **NoSQL Injection**: Sanitização automática via Mongoose.
+-   **X-Powered-By**: Cabeçalho desabilitado para dificultar o reconhecimento da stack por atacantes.
 
 ## 🚦 Códigos de Erro
 
 | Código | Descrição |
 |---|---|
-| 200 | Sucesso |
-| 400 | Erro na requisição (ex: texto faltando) |
-| 401 | Não autorizado (Token inválido ou expirado) |
-| 500 | Erro interno do servidor |
+| 200 | Sucesso total |
+| 400 | Erro na requisição (texto muito curto ou formato inválido) |
+| 401 | Não autorizado (Token JWT ausente ou expirado) |
+| 404 | Recurso não encontrado |
+| 500 | Erro interno (Geralmente falha de conexão com DB ou IA) |
 
 ---
-*Para mais detalhes, consulte o arquivo [openapi.yaml](./openapi.yaml).*
+*Para ver a especificação técnica completa dos campos, consulte o arquivo [openapi.yaml](./openapi.yaml).*
