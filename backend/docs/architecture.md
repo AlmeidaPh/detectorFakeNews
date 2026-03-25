@@ -57,4 +57,3 @@ sequenceDiagram
 - **Segurança Nativa**: Filtros de entrada e cabeçalhos de proteção (HSTS, CSP, XSS-Filter).
 
 ---
-*Scandit.AI — Engenharia robusta para a era da desinformação.*
